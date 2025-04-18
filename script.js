@@ -72,21 +72,24 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 重新開始測驗
     DOM.buttons.restart.addEventListener('click', () => {
+        // 重置測驗狀態
         currentQuestionIndex = 0;
         userAnswers.length = 0;
+        
+        // 移除結果頁面
         DOM.containers.result.classList.remove('active');
         
         // 重置DOM元素
         DOM.elements.progressFill.style.width = '0%';
         
-        // 短暫延遲以確保過渡效果
-        setTimeout(() => {
-            DOM.containers.test.classList.add('active');
-            renderQuestion();
-            
-            // 滾動到頂部
-            window.scrollTo(0, 0);
-        }, 100);
+        // 顯示介紹頁面，而不是直接進入測驗頁面
+        DOM.containers.intro.classList.add('active');
+        
+        // 確保頁面可滾動
+        document.body.style.overflow = 'auto';
+        
+        // 滾動到頂部
+        window.scrollTo(0, 0);
     });
     
     // 渲染當前問題
