@@ -60,15 +60,25 @@ document.addEventListener('DOMContentLoaded', function() {
     setViewportHeight();
     
     // 開始測驗
-    DOM.buttons.start.addEventListener('click', () => {
-        DOM.containers.intro.classList.remove('active');
-        DOM.containers.test.classList.add('active');
-        
-        // 強制頁面重排以確保過渡效果平滑
-        DOM.containers.test.offsetHeight;
-        
-        renderQuestion();
-    });
+DOM.buttons.start.addEventListener('click', function() {
+    console.log("開始測驗按鈕被點擊");
+    
+    // 移除介紹頁面
+    DOM.containers.intro.classList.remove('active');
+    
+    // 確保測驗容器在添加active之前是重置狀態的
+    DOM.elements.progressFill.style.width = '0%';
+    DOM.elements.progressText.textContent = `問題 1/${questions.length}`;
+    
+    // 添加測驗頁面
+    DOM.containers.test.classList.add('active');
+    
+    // 強制頁面重排以確保過渡效果平滑
+    DOM.containers.test.offsetHeight;
+    
+    // 渲染第一個問題
+    renderQuestion();
+});
     
     // 重新開始測驗
     DOM.buttons.restart.addEventListener('click', () => {
