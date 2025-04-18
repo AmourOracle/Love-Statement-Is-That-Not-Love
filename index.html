@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>愛的陳述：那些沒說出口的就不是愛嗎？</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="page-background"></div>
+    
+    <div class="container">
+        <!-- 介紹頁面 -->
+        <div id="intro-container" class="test-container active">
+            <div class="intro">
+                <p>愛是一部無聲電影，交談間的言語則是我們為它配上的旁白。</p>
+                <p>有些人選擇忠實記錄每一個細節、有些人則精心剪輯留下精華、有些人用溫柔的濾鏡包裹尖銳的現實、有些人則在沉默中構建富有張力的場景。</p>
+                <p>我們都在這部關於愛的作品中，扮演著不同的創作角色。</p>
+                <p>每一次對話都是一個鏡頭，每一個字句都是一幀畫面；是一部誠實的紀錄片，或是一部經過精心剪輯的劇情片。</p>
+                <p>當真相漂浮在空氣中，未被拍攝的、未被剪輯的、未被呈現的，是否依然存在？沒說出口的愛，是否依然是愛？</p>
+                <p>讓我們走進這座愛情劇場，探尋那些藏在鏡頭背後的真相與情感。</p>
+            </div>
+            <button class="start-btn" id="start-test">開始測驗</button>
+        </div>
+        
+        <!-- 測驗頁面 - 沉浸式設計 -->
+        <div id="test-container" class="test-container fullscreen">
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-text" id="progress-text">問題 1/11</div>
+            </div>
+            
+            <!-- 問題圖片區域 -->
+            <div class="question-image-container" id="question-image-container">
+                <div class="question-overlay">
+                    <div class="question" id="question-text"></div>
+                </div>
+            </div>
+            
+            <!-- 選項區域 -->
+            <div class="options-container" id="options-container">
+                <!-- 選項將由JavaScript動態生成 -->
+            </div>
+        </div>
+        
+        <!-- 結果頁面 -->
+        <div id="result-container" class="result-container">
+            <h2 class="result-title" id="result-title">你的溝通類型是：</h2>
+            <div class="result-subtitle" id="result-subtitle"></div>
+            
+            <div class="result-description" id="result-description">
+                <!-- 結果描述將由JavaScript動態生成 -->
+            </div>
+            
+            <div class="book-traits">
+                <h3>你的溝通特質</h3>
+                <div id="traits-container">
+                    <!-- 特質將由JavaScript動態生成 -->
+                </div>
+            </div>
+            
+            <div class="related-books">
+                <h3>相似的溝通風格</h3>
+                <div id="similar-books">
+                    <!-- 相似溝通風格將由JavaScript動態生成 -->
+                </div>
+                
+                <h3>互補的溝通風格</h3>
+                <div id="complementary-books">
+                    <!-- 互補溝通風格將由JavaScript動態生成 -->
+                </div>
+            </div>
+            
+            <div class="share-section">
+                <h3>分享你的結果</h3>
+                <p>複製以下文字，分享你的測驗結果：</p>
+                <div class="share-text" id="share-text">
+                    <!-- 分享文字將由JavaScript動態生成 -->
+                </div>
+                <button class="copy-btn" id="copy-btn">複製</button>
+                <button class="restart-btn" id="restart-btn">重新測驗</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

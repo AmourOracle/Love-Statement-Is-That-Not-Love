@@ -1,0 +1,405 @@
+:root {
+    --primary-color: #583e23;
+    --secondary-color: #a67c52;
+    --background-color: #f5f0e8;
+    --text-color: #333;
+    --highlight-color: #d4a373;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Noto Serif TC', serif, 'Times New Roman', Times, serif;
+    color: var(--text-color);
+    line-height: 1.6;
+    padding: 0;
+    margin: 0;
+    overflow: hidden; /* 防止頁面滾動 */
+    height: 100vh;
+    position: relative;
+}
+
+.page-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=2030');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.2;
+    z-index: -1;
+}
+
+.container {
+    width: 100%;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 5px 15px var(--shadow-color);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 介紹頁面 */
+#intro-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 20px;
+    text-align: center;
+}
+
+.intro {
+    max-width: 800px;
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: rgba(212, 163, 115, 0.1);
+    border-left: 4px solid var(--highlight-color);
+    border-radius: 4px;
+}
+
+/* 測驗容器 */
+.test-container {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    height: 100vh;
+}
+
+.test-container.active {
+    display: flex;
+    flex-direction: column;
+    opacity: 1;
+}
+
+.test-container.fullscreen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+}
+
+/* 進度指示器 */
+.progress-container {
+    padding: 10px 15px 5px;
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+.progress-bar {
+    background-color: #e0e0e0;
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    background-color: var(--highlight-color);
+    height: 100%;
+    width: 0%;
+    transition: width 0.5s ease;
+}
+
+.progress-text {
+    text-align: right;
+    font-size: 0.85rem;
+    color: var(--secondary-color);
+    margin-top: 3px;
+    padding-right: 5px;
+}
+
+/* 問題圖片區域 */
+.question-image-container {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end; /* 問題顯示在底部 */
+    justify-content: center;
+    transition: opacity 0.3s ease, background-image 0.3s ease;
+}
+
+/* 問題容器 */
+.question-overlay {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+.question {
+    font-weight: 500;
+    font-size: clamp(1rem, 3vw, 1.4rem);
+    line-height: 1.5;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* 選項區域 */
+.options-container {
+    flex: 0 0 auto;
+    max-height: 45vh; /* 確保選項不會占用太多空間 */
+    overflow-y: auto;
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.95);
+    scrollbar-width: thin;
+    scrollbar-color: var(--secondary-color) rgba(255, 255, 255, 0.2);
+    transition: opacity 0.3s ease;
+}
+
+/* 美化滾動條 */
+.options-container::-webkit-scrollbar {
+    width: 5px;
+}
+
+.options-container::-webkit-scrollbar-thumb {
+    background-color: var(--secondary-color);
+    border-radius: 10px;
+}
+
+.options-container::-webkit-scrollbar-track {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.option {
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(166, 124, 82, 0.3);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    position: relative;
+    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+    animation: fadeInUp 0.5s ease forwards;
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.option:last-child {
+    margin-bottom: 5px;
+}
+
+.option:hover {
+    background-color: rgba(212, 163, 115, 0.2);
+    border-color: var(--highlight-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.option.selected {
+    background-color: var(--highlight-color);
+    color: white;
+    border-color: var(--primary-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 按鈕樣式 */
+button {
+    padding: 12px 24px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-size: 1rem;
+}
+
+button:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
+}
+
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.start-btn {
+    display: block;
+    width: 200px;
+    margin: 20px auto;
+    font-size: 1.1rem;
+    padding: 12px 24px;
+}
+
+/* 結果頁面 */
+.result-container {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.result-container.active {
+    display: block !important;
+    opacity: 1;
+}
+
+.result-title {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.result-description {
+    padding: 20px;
+    background-color: rgba(212, 163, 115, 0.1);
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.result-subtitle {
+    font-style: italic;
+    color: var(--secondary-color);
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.book-traits {
+    margin: 20px 0;
+}
+
+.trait-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.trait-name {
+    font-weight: bold;
+}
+
+.trait-stars {
+    color: var(--highlight-color);
+}
+
+.related-books, .share-section {
+    margin: 25px 0;
+}
+
+h3 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.share-text {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    margin: 15px 0;
+    white-space: pre-wrap;
+}
+
+.copy-btn {
+    background-color: var(--secondary-color);
+    margin-right: 10px;
+}
+
+.restart-btn {
+    margin-top: 20px;
+    display: block;
+    width: 200px;
+    margin: 20px auto;
+}
+
+/* 選項點擊效果 */
+.option::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: var(--highlight-color);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+    border-radius: 7px;
+}
+
+.option:active::after {
+    opacity: 0.3;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .container {
+        padding: 0;
+    }
+    
+    .question {
+        font-size: clamp(0.9rem, 4vw, 1.1rem);
+    }
+    
+    .option {
+        padding: 12px;
+        font-size: clamp(0.85rem, 3.5vw, 1rem);
+    }
+    
+    /* 調整問題圖片和選項的比例 */
+    .question-image-container {
+        flex: 3; /* 在小螢幕上給問題圖片區域更多空間 */
+    }
+    
+    .options-container {
+        max-height: 50vh; /* 在小螢幕上增加選項區域高度 */
+    }
+}
+
+/* 豎屏設備優化 */
+@media (max-height: 700px) {
+    .question-overlay {
+        padding: 10px;
+    }
+    
+    .question {
+        font-size: clamp(0.8rem, 2.8vw, 1rem);
+    }
+    
+    .option {
+        padding: 10px;
+        margin-bottom: 8px;
+    }
+}
+
+/* 高解析度設備優化 */
+@media (min-height: 1000px) {
+    .option {
+        padding: 18px;
+        margin-bottom: 15px;
+    }
+    
+    .options-container {
+        max-height: 40vh;
+    }
+}
