@@ -59,44 +59,36 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('resize', setViewportHeight);
     setViewportHeight();
     
+    // Fisher-Yates 洗牌算法 - 用於隨機打亂數組
+    function shuffleArray(array) {
+        const shuffled = [...array]; // 創建原數組的拷貝
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+    }
+    
     // 開始測驗
-DOM.buttons.start.addEventListener('click', function() {
-    console.log("開始測驗按鈕被點擊");
-    
-    // 移除介紹頁面
-    DOM.containers.intro.classList.remove('active');
-    
-    // 確保測驗容器在添加active之前是重置狀態的
-    DOM.elements.progressFill.style.width = '0%';
-    DOM.elements.progressText.textContent = `問題 1/${questions.length}`;
-    
-    // 添加測驗頁面
-    DOM.containers.test.classList.add('active');
-    
-    // 強制頁面重排以確保過渡效果平滑
-    DOM.containers.test.offsetHeight;
-    
-    // 渲染第一個問題
-    renderQuestion();
-});
+    DOM.buttons.start.addEventListener('click', () => {
+        DOM.containers.intro.classList.remove('active');
+        DOM.containers.test.classList.add('active');
+        
+        // 強制頁面重排以確保過渡效果平滑
+        DOM.containers.test.offsetHeight;
+        
+        renderQuestion();
+    });
     
     // 重新開始測驗
     DOM.buttons.restart.addEventListener('click', () => {
-        // 重置測驗狀態
         currentQuestionIndex = 0;
         userAnswers.length = 0;
-        
-        // 移除結果頁面
         DOM.containers.result.classList.remove('active');
+        DOM.containers.intro.classList.add('active');
         
         // 重置DOM元素
         DOM.elements.progressFill.style.width = '0%';
-        
-        // 顯示介紹頁面，而不是直接進入測驗頁面
-        DOM.containers.intro.classList.add('active');
-        
-        // 確保頁面可滾動
-        document.body.style.overflow = 'auto';
         
         // 滾動到頂部
         window.scrollTo(0, 0);
@@ -120,14 +112,26 @@ DOM.buttons.start.addEventListener('click', function() {
             DOM.elements.questionImageContainer.style.opacity = '1';
         }, 300);
         
+        // 創建選項的拷貝並標記原始索引
+        const optionsWithIndex = question.options.map((option, originalIndex) => {
+            return {
+                ...option,
+                originalIndex // 保存原始索引，以便正確記錄選擇
+            };
+        });
+        
+        // 打亂選項順序
+        const shuffledOptions = shuffleArray(optionsWithIndex);
+        
         // 渲染選項 - 使用淡入效果，不顯示ABCDE標記
         DOM.elements.optionsContainer.style.opacity = '0.7';
         setTimeout(() => {
             let optionsHTML = '';
-            question.options.forEach((option, index) => {
-                const isSelected = userAnswers[currentQuestionIndex] === index;
+            shuffledOptions.forEach((option, index) => {
+                const originalIndex = option.originalIndex;
+                const isSelected = userAnswers[currentQuestionIndex] === originalIndex;
                 optionsHTML += `
-                <div class="option ${isSelected ? 'selected' : ''}" data-index="${index}" style="animation-delay: ${index * 0.1}s">
+                <div class="option ${isSelected ? 'selected' : ''}" data-index="${originalIndex}" style="animation-delay: ${index * 0.1}s">
                     ${option.text}
                 </div>`;
             });
