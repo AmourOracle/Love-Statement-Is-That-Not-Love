@@ -69,29 +69,91 @@ document.addEventListener('DOMContentLoaded', function() {
         return shuffled;
     }
     
-    // 開始測驗
-    DOM.buttons.start.addEventListener('click', () => {
-        DOM.containers.intro.classList.remove('active');
-        DOM.containers.test.classList.add('active');
+    // 改進的開始測驗 - 添加過渡動畫
+    DOM.buttons.start.addEventListener('click', function() {
+        console.log("開始測驗按鈕被點擊");
         
-        // 強制頁面重排以確保過渡效果平滑
-        DOM.containers.test.offsetHeight;
+        // 先執行介紹頁面淡出效果
+        DOM.containers.intro.style.opacity = '0';
+        DOM.containers.intro.style.transform = 'translateY(-20px)';
         
-        renderQuestion();
+        // 等待淡出完成後再切換頁面
+        setTimeout(() => {
+            // 移除介紹頁面
+            DOM.containers.intro.classList.remove('active');
+            
+            // 準備測驗頁面但保持透明
+            DOM.containers.test.classList.add('active');
+            DOM.containers.test.style.opacity = '0';
+            DOM.containers.test.style.transform = 'translateY(20px)';
+            
+            // 強制重排以確保過渡效果
+            DOM.containers.test.offsetHeight;
+            
+            // 設置進度條初始狀態
+            DOM.elements.progressFill.style.width = '0%';
+            DOM.elements.progressText.textContent = `問題 1/${questions.length}`;
+            
+            // 預加載第一個問題的背景圖片
+            const firstQuestion = questions[0];
+            const dominantType = getDominantType(firstQuestion.options);
+            const firstBackgroundImage = backgroundImages[dominantType] || backgroundImages.default;
+            
+            const preloadImage = new Image();
+            preloadImage.src = firstBackgroundImage;
+            
+            preloadImage.onload = function() {
+                // 圖片加載完成後，設置背景並淡入
+                DOM.elements.questionImageContainer.style.backgroundImage = `url('${firstBackgroundImage}')`;
+                
+                // 觸發測驗頁面淡入動畫
+                DOM.containers.test.style.opacity = '1';
+                DOM.containers.test.style.transform = 'translateY(0)';
+                
+                // 等待頁面淡入後再渲染問題
+                setTimeout(() => {
+                    renderQuestion();
+                }, 300);
+            };
+            
+            // 如果圖片加載時間過長，也要繼續進行
+            setTimeout(() => {
+                if (DOM.containers.test.style.opacity !== '1') {
+                    DOM.containers.test.style.opacity = '1';
+                    DOM.containers.test.style.transform = 'translateY(0)';
+                    renderQuestion();
+                }
+            }, 1000);
+        }, 300);
     });
     
-    // 重新開始測驗
+    // 改進的重新開始測驗
     DOM.buttons.restart.addEventListener('click', () => {
+        // 重置測驗狀態
         currentQuestionIndex = 0;
         userAnswers.length = 0;
-        DOM.containers.result.classList.remove('active');
-        DOM.containers.intro.classList.add('active');
         
-        // 重置DOM元素
-        DOM.elements.progressFill.style.width = '0%';
+        // 執行結果頁面淡出
+        DOM.containers.result.style.opacity = '0';
         
-        // 滾動到頂部
-        window.scrollTo(0, 0);
+        // 等待淡出完成後切換頁面
+        setTimeout(() => {
+            DOM.containers.result.classList.remove('active');
+            DOM.containers.intro.style.opacity = '0';
+            DOM.containers.intro.classList.add('active');
+            
+            // 強制重排以確保過渡效果
+            DOM.containers.intro.offsetHeight;
+            
+            // 執行介紹頁面淡入
+            DOM.containers.intro.style.opacity = '1';
+            
+            // 重置DOM元素
+            DOM.elements.progressFill.style.width = '0%';
+            
+            // 滾動到頂部
+            window.scrollTo(0, 0);
+        }, 300);
     });
     
     // 渲染當前問題
@@ -347,6 +409,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // 顯示結果
     function showResult() {
         try {
+            // 預先設置結果容器為透明狀態以準備淡入
+            DOM.containers.result.style.opacity = '0';
+            DOM.containers.result.classList.add('active');
+            
             const result = calculateResult();
             
             // 設置結果標題和副標題
@@ -411,8 +477,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // 設置分享文字
             DOM.elements.shareText.textContent = result.shareText || '';
             
-            // 顯示結果容器
-            DOM.containers.result.classList.add('active');
+            // 強制重排以確保過渡效果
+            DOM.containers.result.offsetHeight;
+            
+            // 執行結果頁面淡入
+            DOM.containers.result.style.opacity = '1';
             
             // 確保結果容器可滾動
             document.body.style.overflow = 'auto';
